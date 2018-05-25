@@ -1,7 +1,59 @@
-.container {
-    margin: 12px;
+.navbar {
+    padding: 10px 10px 0 10px;
+}
+.navbar, .navbar-fluid {
+    -webkit-box-shadow: 0 8px 6px -6px #999;
+    -moz-box-shadow: 0 8px 6px -6px #999;
+    box-shadow: 0 8px 6px -6px #999;
+}
+nav.navbar-fixed-bottom, nav.navbar-fixed-top {
+    z-index: 99999;
+}
+nav.navbar.navbar-default .navbar-brand {
+    background-size: 12rem;
+    width: 12rem;
+}
+.navbar-option-selected {
+    border-bottom: 3px solid #213e7f;
+    padding-bottom: 17px;
+}
+.navbar-tab-selected {
+    border-bottom: 3px solid #213e7f;
+}
+.nav-tabs {
+    background-color: white;
+    border: 1px solid #e1e1e4;
+}
+.nav-tab-container {
+    background-color: white;
+    border: 1px solid #e1e1e4;
+    padding: 2rem;
+}
+nav.navbar.navbar-inverse .navbar-brand {
+    background-size: 12rem;
+    width: 12rem;
+}
+nav.navbar.navbar-inverse {
+    background-color: #162a57;
+}
+.nav-tabs > li > a:hover {
+    border-color: transparent;
+}
+.nav > li > a:hover {
+    background-color: inherit;
+}
+[role=presentation].navbar-option-selected {
+    border-bottom: 3px solid #213e7f;
+    padding-bottom: 0;
 }
 
-.full-width {
-    width: 100%;
+.jumbotron {
+    height: 496px;
+    margin-top: 80px;
 }
+
+/* ------------------------------------- */
+.red-code {
+    color: red;
+}
+

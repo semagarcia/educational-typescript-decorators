@@ -1,72 +1,712 @@
-<div class="container full-width">
-  <!-- Class decorators -->
-  <div class="full-width">
-    <h1>Class decorators</h1>
-    <hr style="margin-top:-20px" />
-    <h3>XXXXX</h3>
-    <p>This kind of decorators are applied to a class.</p>
+<nav class="navbar-fluid navbar-default navbar-fixed-top" role="navigation">
+    <div class="container-fluid"> 
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#" style="padding:0; padding-top:4px">
+                <img src="/assets/images/ts-logo-small.png" width="36" style="padding-top:3px" />
+            </a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li><a href="#class-decorator">
+                    <i class="glyphicon glyphicon-paperclip"></i>&nbsp; Class decorator</a>
+                </li>
+                <li><a href="#property-decorator">
+                    <i class="glyphicon glyphicon-tags"></i>&nbsp; Property decorator</a>
+                </li>
+                <li><a href="#method-decorator">
+                    <i class="glyphicon glyphicon-pushpin"></i>&nbsp; Method decorator</a>
+                </li>
+                <li><a href="#parameter-decorator">
+                    <i class="glyphicon glyphicon-flash"></i>&nbsp; Parameter decorator</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
 
-    <h4>Typical uses</h4>
-    <p>Typical uses:</p>
-    <ul>
-      <li></li>
-    </ul>
+<div class="container-fluid">
+    <div style="margin-top:80px">
+        <img class="col-xs-12 img-responsive" src="/assets/images/header.jpg" />
+    </div>
+</div>
 
-    <h4>Decorator in action! (example)</h4>
-    <p></p>
-  </div>
+<app-bar></app-bar>
+<app-baz></app-baz>
 
-  <!-- Method decorators -->
-  <div class="full-width">
-    <h1>Method decorators</h1>
-    <hr style="margin-top:-20px" />
-    <h3>XXXXX</h3>
-    <p>This kind of decorators...</p>
+<div class="container" style="margin-top: 60px">
+    <div class="text-center">
+        <h1>TypeScript Decorators</h1>
+    </div>
 
-    <h4>Decorator composition</h4>
-    <p>Decorator composition</p>
+    <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <div class="row" style="padding-bottom:18px">
+        <div class="row" style="margin: 0 25px">
+            <h2 id="class-decorator">Class decorator</h2>
+            <hr style="margin-top: -8px;" />
+            <p>Class decorators are the top-level decorators that we use to express <strong>intent</strong> 
+                for classes. Thanks to them we can populate a class (or define that intent) without having 
+                to actually put any code inside the class.</p>
+            <p>Imagine the following class definition:</p>
+            <pre>
+            <code>
+            @ClassDecoratorParams(1, "a")
+            @ClassDecoratorParams(2, "b")
+            class ClassDecoratorParamsExample {{ '{}' }}
+            </code>
+            </pre>
 
-    <h4>Typical uses</h4>
-    <p>Typical uses:</p>
-    <ul>
-      <li></li>
-    </ul>
+            <p>And the following function implementation (that will represent our class empty decorator):</p>
 
-    <h4>Decorator in action! (example)</h4>
-    <p></p>
-  </div>
+            <pre>
+            <code>
+            function ClassDecoratorParams(param1: number, param2: string) {{ '{' }}
+                return function(target: Function) {{ '{' }}
+                    console.log(
+                        'ClassDecoratorParams('
+                            + param1 + ', ' + param2 + 
+                        ') called on: ' + target
+                    );
+                {{ '}' }}
+            {{ '}' }}
+            </code>
+            </pre>
+        </div>
 
-  <!-- Parameter decorators -->
-  <div class="full-width">
-    <h1>Parameter decorators</h1>
-    <hr style="margin-top:-20px" />
-    <h3>XXXXX</h3>
-    <p>This kind of decorators...</p>
+        <div class="row" style="margin: 0 25px">
+            <p>And the output through the console will be:</p>
+            <pre>
+            <code>
+            ClassDecoratorParams(2, 'b') 
+                called on function ClassDecoratorParamsExample() {{ '{}' }}
+            ClassDecoratorParams(1, 'a') 
+                called on function ClassDecoratorParamsExample() {{ '{}' }}
+            </code>
+            </pre>
+            <p>Pay attention to the order... we will cover that issue later.</p>
+        </div>
 
-    <h4>Typical uses</h4>
-    <p>Typical uses:</p>
-    <ul>
-      <li></li>
-    </ul>
+        <div class="row" style="margin: 0 25px">
+            <h3>Angular Study Case</h3>
+            <p>
+                But, how Angular populates its @NgModule classes without code inside it? Easily, using a decorator wit annotations. Let's see an example:
+            </p>
+            <pre><code>
+            // AppModule example: 
+            @NgModule({{ '{' }}
+                imports: [...],
+                declarations: [...],
+                providers: [...],
+                bootstrap: [...]
+            {{ '}' }})
+            export class AppModule {{ '{}' }}
 
-    <h4>Decorator in action! (example)</h4>
-    <p></p>
-  </div>
+            // Our class-ed example
+            @MyAwesomeDecorator({{ '{' }}
+                name: 'Sema',
+                surname: 'García'
+            {{ '}' }})
+            class MyGreatClass {{ '{}' }}
+            </code></pre>
+            
+            <p>Now, we inspect the decorator implementation:</p>
+            
+            <pre>
+            <code>
+            // Interface for our decorator
+            interface AwesomedecoratorExtraData {{ '{' }}
+                name: string;
+                surname: string;
+                other?: any;
+            {{ '}' }}
 
-  <!-- Property decorators -->
-  <div class="full-width">
-    <h1>Property decorators</h1>
-    <hr style="margin-top:-20px" />
-    <h3>XXXXX</h3>
-    <p>This kind of decorators...</p>
+            // Decorator
+            export function MyAwesomeDecorator(annotations: AwesomedecoratorExtraData) {{ '{' }}
+                // Return a function closure
+                return function(ctor: Function): void {{ '{' }}
+                    // Reference to the original target
+                    var original = ctor;
 
-    <h4>Typical uses</h4>
-    <p>Typical uses:</p>
-    <ul>
-      <li></li>
-    </ul>
+                    function construct(constructor, args) {{ '{' }}
+                        // If the decorated class has a parameterized constructor, args will hold
+                        // the arguments passed during the instantiation
+                        var c: any = function() {{ '{' }}
+                            // Values from annotations
+                            this.name = annotations.name;
+                            this.surname = annotations.surname;
 
-    <h4>Decorator in action! (example)</h4>
-    <p></p>
-  </div>
+                            // Specific, private or computed attributes
+                            this.timestamp = new Date();
+                            return constructor.apply(this, args);
+                        {{ '}' }}
+
+                        c.prototype = constructor.prototype;
+                        return new c();
+                    {{ '}' }}
+
+                    var f: any = function(...args) {{ '{' }}
+                        return construct(original, args);
+                    {{ '}' }}
+
+                    f.prototype = original.prototype;
+                    return f;
+                {{ '}' }}
+            {{ '}' }}
+            </code>
+            </pre>
+
+            <p>And now, just print the new instace created from an "empty" class...</p>
+            <pre><code>
+            {{ '{' }}
+                name: "Sema", 
+                surname: "García", 
+                timestamp: Tue Jun 20 2017 17:11:18 GMT+0200 (CEST)
+            {{ '}' }}
+            </code></pre>
+            <p>Surprise!! The instance has been populated and filled with annotation 
+                information and other specific attributes, in the same way as Angular does
+                with, for instance, the @NgModule() as we said before.</p>
+        </div>
+    </div>
+
+    <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <div class="row" style="padding-bottom:18px">
+        <div class="row" style="margin: 0 25px">
+            <h2 id="method-decorator">Method decorator</h2>
+            <hr style="margin-top: -8px;" />
+            <p>
+                A method decorator is declared just before a method declaration. The decorator is
+                applied to the <em>Property Descriptor</em> for the method, and can be used to
+                observe, modify, or replace a method definition. A method decorator cannot be
+                used in a declaration file, on a overload, or in any other ambient context (such
+                as in a declare class).
+            </p>
+            <p>
+                The expression for the method decorator will be called as a function at runtime, 
+                with the following three arguments:
+            </p>
+            <ol>
+                <li>Either the constructor function of the class for a static member, or the prototype
+                    of the class for an instance member.
+                </li>
+                <li>The name of the member.</li>
+                <li>The <em>Property Descriptor</em> for the member.</li>
+            </ol>
+            <p>Suppose the following class that has two different decorators:</p>
+            <pre><code>
+            class ClassDecoratorParamsExample {{ '{' }}
+
+                constructor() {{ '{}' }}
+
+                <span class="red-code">@log</span>
+                add(x: number, y: number) {{ '{' }}
+                    return x + y;
+                {{ '}' }}
+
+                <span class="red-code">@log2({{ '{' }} foo: 9 {{ '}' }})</span>
+                multiply(x: number, y: number) {{ '{' }}
+                    return x * y;
+                {{ '}' }}
+            }
+            </code></pre>
+
+            <p>Now, let's go to inspect our main logger decorator (log):</p>
+
+            <pre><code>
+            /**
+            * The log decorator replaces the original function with a new function that logs received arguments,
+            * executes the original method and stores the result in a local variable, logs and returns the result.
+            * @param target The prototype of the class (the method being decorated)
+            * @param propertyKey The name of the method
+            * @param descriptor The third parameter in Object.defineProperty(). As this
+            *                   param is a generic, we can restrict the methods where be applied.
+            */
+            export function log(
+                target: Object, 
+                propertyKey: string | symbol, 
+                descriptor: TypedPropertyDescriptor&lt;any&gt;) {{ '{' }}
+
+                // Save a reference to the original method
+                var originalDecoratedMethod = descriptor.value;
+
+                // NOTE: Do not use arrow syntax here to use the correct value of 'this' in this method
+                descriptor.value = function(...args: any[]) {{ '{' }}
+                    // PRE
+                    console.log("The method args are: " + JSON.stringify(args));
+
+                    // Run/Execute and save/store the result
+                    const result = originalDecoratedMethod.apply(this, args);
+
+                    // POST
+                    console.log("The return value is: " + result);
+
+                    // Return the result of the original method (or modify it before returning)
+                    return result;
+                };
+                return descriptor;
+            {{ '}' }}
+            </code></pre>
+
+            <p>The result can be checked and reviewed in the Chrome Developer Tools:</p>
+            <pre><code>
+            Calling to add() method...
+            The method args are: 1, 3
+            The return value is: 4
+            </code></pre>
+
+            <p>But we can specify some additional parameters inside of the decorator too...</p>
+            <pre><code>
+            export function log2(data: Object) {{ '{' }}
+                console.log('Evaluating log2 decorator with extra data: ', data);
+                return function(target: any, propertyKey: string, descriptor: PropertyDescriptor) {{ '{' }}
+                    // save a reference to the original method this way we keep the values currently in the
+                    // descriptor and don't overwrite what another decorator might have done to the descriptor.
+                    if(descriptor === undefined) {{ '{' }}
+                        descriptor = Object.getOwnPropertyDescriptor(target, propertyKey);
+                    {{ '}' }}
+                    var originalMethod = descriptor.value;
+                
+                    //editing the descriptor/value parameter
+                    descriptor.value = function () {{ '{' }}
+                        var args = [];
+                        for (var _i = 0; _i &lt; arguments.length; _i++) {{ '{' }}
+                            args[_i - 0] = arguments[_i];
+                        {{ '}' }}
+                        var a = args.map(function (a) {{ '{' }} return JSON.stringify(a); {{ '}' }}).join();
+                        
+                        // note usage of originalMethod here
+                        var result = originalMethod.apply(this, args);
+                        var r = JSON.stringify(result);
+                        console.log("Call: " + propertyKey + "(" + a + ") => " + r);
+                        Logger.endTrace('log2');
+                        return result;
+                    {{ '}' }};
+                
+                    // return edited descriptor as opposed to overwriting the descriptor
+                    return descriptor;
+                }
+            }
+            </code></pre>
+
+            <p>The result can be checked and reviewed in the Chrome Developer Tools:</p>
+
+            <pre><code>
+            Evaluating log2 decorator with data: {{ '{' }} foo: 9 {{ '}' }}
+            Calling to multiply() method...
+            Call: multiply(2, 3) => 6
+            </code></pre>
+
+            <p>In that example we are using a decorator factory to be able to receive as parameter in
+                the outer function the value of the decorator params (foo in that case).
+            </p>
+        </div>
+
+        <div class="row" style="margin: 0 25px">
+            <h3>Implicit constraints applied to decorators</h3>
+            <p>
+                Suppose that we need a decorator to use only in that case in which the decorated method
+                receives a specific type of data or returns a concrete type. For that, imagine that class:
+            </p>
+            <pre><code>
+            class MyClass {{ '{' }}
+
+                @numberOnly    <span class="red-code">// Will fail</span>
+                stringMethod(arg: string) {{ '{' }}
+                    return "Message: " + arg;
+                {{ '}' }}
+
+                @numberOnly    <span class="red-code">// Won't fail</span>
+                numberMethod(num: number) {{ '{' }}
+                    return num;
+                {{ '}' }}
+
+            {{ '}' }}
+            </code></pre>
+            <p>And now, the correspondent decorator:</p>
+            <pre><code>
+            function numberOnly(
+                target: Object, 
+                propertyKey: string | symbol, 
+                descriptor: TypedPropertyDescriptor&lt;(num: number) => number>) {{ '{' }}
+                    // ...
+                    return descriptor;
+            {{ '}' }}
+            </code></pre>
+            <p>What's happen here? Thanks to typed descriptor param, the signature are saying that
+                the descriptor is only allowed on methods that have one parameter of type number
+                <strong>AND</strong> returns a number too.
+            </p>
+        </div>
+    </div>
+
+    <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <div class="row" style="padding-bottom:18px">
+        <div class="row" style="margin: 0 25px">
+            <h2 id="property-decorator">Property decorator</h2>
+            <hr style="margin-top: -8px;" />
+            <p>Property decorators are similar to method decorators. The only difference is they do not
+            accept property descriptor as third argument and do not return anything. Please, pay
+            attention to the next decorators, but firstly, the "test" class.</p>
+
+            <p>The class:</p>
+            <pre>
+            <code>
+            export class SomeClass {{ '{' }}
+                @MyPropertyDecorator
+                varA: string = 'asdf';
+
+                @MyPropertyValidator({{ '{' }} maxLength: 4 {{ '}' }})
+                name: string = 'pat';
+
+                @MyPropertyValidator({{ '{' }} minLength: 0, maxLength: 10 {{ '}' }})
+                surname: string;
+
+                @MyParameterizedDecorator({{ '{}' }})
+                varB:number;
+
+                @MyPropertyDecorator
+                varC = {{ '{' }} c: 2 {{ '}' }};
+
+                constructor(a, b) {{ '{' }}
+                    this.varA = a;
+                    this.varB = b;
+                {{ '}' }}
+            {{ '}' }}
+
+            // Creating instances
+            let someClass = new SomeClass('A', 7);
+            console.log('someClass instance: ', someClass);
+            
+            someClass.name = 'S';
+            someClass.surname = 'G';
+            console.log('someClass name: ', someClass);
+
+            // Force error:
+            //someClass.nam11e = 'Semaaaaa';  // Commented because otherwise will throw an error
+            console.log('someClass name??: ', someClass);
+            </code>
+            </pre>
+
+            <h4>Simple Property Decorator</h4>
+            <pre>
+            <code>
+            /*
+             * Property decorator
+             * @param target The prototype of the class
+             * @param propertyKey The name of the property
+             */
+            export function MyPropertyDecorator(target: any, propertyKey: string | symbol) {{ '{' }}
+                Logger.initTrace('MyPropertyDecorator');
+                console.log('PropertyDecorator called on... ');
+                console.log(' > target: ', target);
+                console.log(' > propertyKey: ', propertyKey);
+                Logger.endTrace('MyPropertyDecorator');
+            {{ '}' }}
+            </code>
+            </pre>
+
+            <h4>Tiny Property Parameterized Decorator</h4>
+            <pre>
+            <code>
+            export function MyParameterizedDecorator(constraints?: Object): Function {{ '{' }}
+                Logger.initTrace('MyParameterizedDecorator');
+                console.log('Decorator constraints: ', constraints);
+
+                /**
+                * Function closure to allow to specify constraints in the outer one.
+                * @param target In instance property the target parameter will be the prototype of the class
+                *        created, not the constructor. The metadata is not being attached to the constructor.
+                *        To get the construction function given a prototype instance as it is store in a
+                *        property called "constructor".
+                * @param propertyKey
+                */
+                return function(target: any, propertyKey: string | symbol) {{ '{' }}
+                    // Work with decorated property
+                    Logger.endTrace('MyParameterizedDecorator');
+                {{ '}' }}
+            {{ '}' }}
+            </code>
+            </pre>
+
+            <h4>Validator Property Decorator</h4>
+            <pre>
+            <code>
+            export function MyPropertyValidator(constraints: {{ '{' }}minLength?: number, maxLength: number{{ '}' }}): Function {{ '{' }}
+                return function(target: any, key: string, descriptor?: PropertyDescriptor) {{ '{' }}
+                    Logger.initTrace('MyPropertyValidator');
+                    console.log('key: ' + key);
+                    let value;
+                    Object.defineProperty(
+                        target.constructor.prototype, 
+                        'name', 
+                        {{ '{' }}
+                            configurable: true,
+                            enumerable: true,
+                            get: function() {{ '{' }} return value {{ '}' }}, 
+                            set: function(n) {{ '{' }}
+                                // We avoid in that example the check of minLength (for brevity)
+                                if(n &amp;&amp; constraints &amp;&amp; n.length > constraints.maxLength) 
+                                    throw Error(`The name cannot be more than ${{ '{' }}constraints.maxLength{{ '}' }} chars`);
+                                else {{ '{' }}
+                                    value = n;
+                            {{ '}' }}
+                        {{ '}' }}
+                    {{ '}' }}
+                    )
+                    Logger.endTrace('MyPropertyValidator');
+                {{ '}' }}
+            {{ '}' }}
+            </code>
+            </pre>
+
+            <p>And the output through console will be:</p>
+            <pre>
+            <code>
+            [INIT] MyPropertyDecorator
+            PropertyDecorator called on...
+             > target: Object {{ '{' }}
+                    constructor: function SomeClass(a, b),
+                    name: 'S',
+                    get name: function (),
+                    set name: function (n)  
+                 {{ '}' }}
+             > propertyKey: varA
+            [END] MyPropertyDecorator
+            
+            [INIT] MyPropertyValidator
+             key: name
+            [END] MyPropertyValidator
+
+            [INIT] MyPropertyValidator
+             key: surname
+            [END] MyPropertyValidator
+
+            [INIT] MyParameterizedDecorator
+             Decorator constraints: > Object {{ '{}' }}
+            [END] MyParameterizedDecorator
+
+            [INIT] MyPropertyDecorator
+            PropertyDecorator called on...
+             > target: Object {{ '{' }}
+                    constructor: function SomeClass(a, b),
+                    name: 'S',
+                    get name: function (),
+                    set name: function (n)  
+                 {{ '}' }}
+             > propertyKey: varC
+            [END] MyPropertyDecorator
+            
+            someClass instance: 
+             > SomeClass {{ '{' }} name: 'pat', varA: 'A', varB: 7, varC: {{ '{' }} c: 2 {{ '}' }} {{ '}' }}
+
+            someClass instance: 
+             > SomeClass {{ '{' }} name: 'S', varA: 'A', varB: 7, varC: {{ '{' }} c: 2 {{ '}' }} {{ '}' }}
+
+            someClass instance: 
+             > SomeClass {{ '{' }} name: 'G', varA: 'A', varB: 7, varC: {{ '{' }} c: 2 {{ '}' }} {{ '}' }}
+            </code>
+            </pre>
+
+            <p>Now, let's talk about the commented line:</p>
+            <pre>
+            <code>
+            //someClass.name = 'Semaaaaa';
+            </code>
+            </pre>
+
+            <p>
+                Why is this line commented? To avoid throw an error. An error? Yes, because we are breaking
+                the decorator rule: when the name is set, its length have to be less than 4 in the first
+                case, or inside a [0, 10] range in the second one.
+            </p>
+        </div>
+    </div>
+
+    <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <div class="row" style="padding-bottom:18px">
+        <div class="row" style="margin: 0 25px">
+            <h2 id="parameter-decorator">Parameter decorator</h2>
+            <hr style="margin-top: -8px;" />
+            <p>The last type of decorators are those who are applied to parameters, like in that case:</p>
+            <pre>
+            <code>
+            class MathClass {{ '{' }}
+                division(@MyParamDecorator() x: number, @MyParameterDecorator({{ '{}' }}) y: number) {{ '{' }}
+                    return x/y;
+                {{ '}' }}
+            {{ '}' }}
+            </code>
+            </pre>
+
+            <p>And the decorators...</p>
+
+            <pre>
+            <code>
+            /**
+            * Param decorator with no annotations. Same version as following decorator but without "param1"
+            * @param target The prototype of the class
+            * @param methodKey The name of the method
+            * @param parameterIndex The index of parameter in the list of the function's paramters
+            */
+            export function MyParamDecorator(target: any, methodKey: string | symbol, parameterIndex: number) {{ '{' }}
+                Logger.initTrace('MyParamDecorator');
+                console.log('MyParameterDecorator called on...');
+                console.log('>> class prototype | object: ', target);
+                console.log('>> method: ', methodKey);
+                console.log('>> parameterIndex: ', parameterIndex);
+                Logger.endTrace('MyParamDecorator');
+            {{ '}' }}
+
+            export function MyParameterDecorator(param1) {{ '{' }}
+                Logger.initTrace('MyParameterDecorator');
+                console.log('Parameterized decorator: ', param1);
+                /**
+                * @param target The prototype of the class
+                * @param methodKey The name of the method
+                * @param parameterIndex The index of parameter in the list of the function's paramters
+                */
+                return function(target: any, methodKey: string | symbol, parameterIndex: number) {{ '{' }}
+                    Logger.log('MyParameterDecorator called on...');
+                    console.log('>> target class: ', target);
+                    console.log('>> method: ', methodKey);
+                    console.log('>> parameterIndex: ', parameterIndex);
+                    Logger.endTrace('MyParameterDecorator');
+                {{ '}' }};
+            {{ '}' }}
+            </code>
+            </pre>
+
+            <p>If we now inspect the console, we'll see these traces:</p>
+
+            <pre>
+            <code>
+            [INIT] MyParameterDecorator 
+            Parameterized decorator: true
+            MyParameterDecorator called on...
+             >> target class: Object {{ '{' }} division: function(x, y), constructor: function MathClass(a, b) {{ '}' }}
+             >> method: division
+             >> parameterIndex: 1
+            [END] MyParameterDecorator
+
+            [INIT] MyParamDecorator 
+            MyParamDecorator called on...
+             >> target class: Object {{ '{' }} division: function(x, y), constructor: function MathClass(a, b) {{ '}' }}
+             >> method: division
+             >> parameterIndex: 0
+            [END] MyParamDecorator
+            </code>
+            </pre>
+        </div>
+    </div>
+
+    <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <div class="row" style="padding-bottom:18px">
+        <div class="row" style="margin: 0 25px">
+            <h2 id="parameter-decorator">Decorator composition</h2>
+            <hr style="margin-top: -8px;" />
+            <p>Mutiple decorators can be applied to a declaration:</p>
+            
+            <pre><code>
+                @f @x elementDecorated  // One line
+            </code></pre>
+            <pre><code>
+                // Multiple line
+                @f 
+                @x
+                elementDecorated
+            </code></pre>
+
+            <p>
+                As in <em>function composition in mathematics</em>, when composing functions <em>f</em> and <em>g</em>,
+                the resulting composite (f·g)(x) is equivalent to f(g(x)). As such, the following steps are performed
+                when evaluating multiple decorators on a single declaration in TypeScript.
+            </p>
+            <ol>
+                <li>The expressions for each decorator are <strong>evaluated</strong> top-to-bottom.</li>
+                <li>The results are then called as functions from bottom-to-top.</li>
+            </ol>
+
+            <p>Given the following decorator factories:</p>
+            <pre><code>
+                function f() {{ '{' }}
+                    console.log("f(): evaluated");
+                    return function (target, propertyKey: string, descriptor: PropertyDescriptor) {{ '{' }}
+                        console.log("f(): called");
+                    {{ '}' }}
+                {{ '}' }}
+
+                function g() {{ '{' }}
+                    console.log("g(): evaluated");
+                    return function (target, propertyKey: string, descriptor: PropertyDescriptor) {{ '{' }}
+                        console.log("g(): called");
+                    {{ '}' }}
+                {{ '}' }}
+
+                class C {{ '{' }}
+                    @f()
+                    @g()
+                    method() {{ '{}' }}
+                {{ '}' }}
+            </code></pre>
+            <p>The output will be:</p>
+            <pre><code>
+                f(): evaluated
+                g(): evaluated
+                g(): called
+                f(): called    
+            </code></pre>
+
+            <h2 id="parameter-decorator">Decorator evaluation</h2>
+            <hr style="margin-top: -8px;" />
+            <p>There is a well defined order to how decorators applied to various declarations inside
+                of a class are applied:
+            </p>
+            <ol>
+                <li>Parameter Decorators, followed by Method, Accessor, or Property Decorators are applied 
+                    for each instance member.</li>
+                <li>Parameter Decorators, followed by Method, Accessor, or Property Decorators are applied 
+                    for each static member.</li>
+                <li>Parameter Decorators are applied for the constructor.</li>
+                <li>Class Decorators are applied for the class.</li>
+            </ol>
+        </div>
+
+        <div class="row" style="margin: 0 25px">
+            <h2 id="p">Common uses of <em>{{ '{' }} method | property {{ '}' }} decorators</em></h2>
+            <hr style="margin-top: -8px;" />
+            <p>
+                A common use could be to simulate delays, latency, bad performance or even high CPU load. To
+                avoid to rewrite another class, imagine a decorator like: <strong>@delay(500)</strong> applied
+                to a single property, and this decorator implementation:
+            </p>
+            <pre><code>
+            export default function delay(duration) {{ '{' }}
+                return function innerDecorator(target, key, descriptor) {{ '{' }}
+                    return {{ '{' }}
+                        configurable: true,
+                        enumerable: descriptor.enumerable,
+                        get: function getter() {{ '{' }}
+                            // Attach this function to the instance (not the class)
+                            Object.defineProperty(this, key, {{ '{' }}
+                                configurable: true,
+                                enumerable: descriptor.enumerable,
+                                value: () => {{ '{' }} 
+                                    // Delay simulation using duration argument value
+                                {{ '}' }}
+                            {{ '}' }});
+                            return this[key];
+                        {{ '}' }}
+                    {{ '}' }}
+                {{ '}' }}
+            {{ '}' }}
+            </code></pre>
+        </div>
+
+        <div class="row" style="margin: 0 25px">
+            <h2 id="decorator-and-annotation">Differente between <em>decorator</em> &amp; <em>annotation</em></h2>
+            <hr style="margin-top: -8px;" />
+            <p>
+                
+            </p>
+        </div>
+    </div>
 </div>

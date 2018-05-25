@@ -1,10 +1,10 @@
-import { TsPage } from './app.po';
+import { TypescriptDecoratorsPage } from './app.po';
 
-describe('ts App', () => {
-  let page: TsPage;
+describe('typescript-decorators App', () => {
+  let page: TypescriptDecoratorsPage;
 
   beforeEach(() => {
-    page = new TsPage();
+    page = new TypescriptDecoratorsPage();
   });
 
   it('should display welcome message', () => {
